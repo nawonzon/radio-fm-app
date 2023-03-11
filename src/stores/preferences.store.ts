@@ -24,7 +24,10 @@ const usePreferences = create<PreferencesStore>()(
 
       setSelectedStation: (selectedStation) => set({ selectedStation })
     }),
-    { name: 'preferences-store' }
+    {
+      name: 'preferences-store',
+      partialize: (state) => ({ selectedCountry: state.selectedCountry })
+    }
   )
 )
 
