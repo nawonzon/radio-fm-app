@@ -1,5 +1,4 @@
-import { IonRange } from '@ionic/react'
-import { motion, MotionValue, useTransform } from 'framer-motion'
+import { MotionValue, useTransform } from 'framer-motion'
 import {
   closeOutline,
   heart,
@@ -8,63 +7,17 @@ import {
   playOutline,
   volumeHighOutline
 } from 'ionicons/icons'
-import styled from 'styled-components'
 import { Station } from '../../models'
 import useFavorites from '../../stores/favorites.store'
-import { Container, Image, StyledIcon, Text, TouchableOpacity } from '../../components/ui'
-
-const BaseContainer = styled(motion.div)`
-  position: fixed;
-  flex-direction: column;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--ion-color-primary);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  z-index: 10;
-`
-const Content = styled(Container)`
-  flex-direction: column;
-  align-items: center;
-  width: 70%;
-
-  & > ${Image} {
-    width: 100%;
-    margin-bottom: 20px;
-  }
-
-  & > ${TouchableOpacity} {
-    font-size: 54px;
-  }
-`
-const StationTags = styled(Text)`
-  opacity: 0.5;
-`
-const VolumeContainer = styled(Container)`
-  width: 100%;
-  align-items: center;
-
-  & > ${StyledIcon} {
-    font-size: 34px;
-  }
-`
-const Volume = styled(IonRange)`
-  --bar-background-active: #fff;
-  margin: 20px 10px 20px 0;
-`
-const TopContainer = styled(Container)`
-  font-size: 34px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: calc(100% - 20px);
-  justify-content: space-between;
-  padding: 10px;
-`
+import { Image, StyledIcon, Text, TouchableOpacity } from '../../components/ui'
+import {
+  BaseContainer,
+  Content,
+  StationTags,
+  TopContainer,
+  Volume,
+  VolumeContainer
+} from './styleds/full-screen-mode.styled'
 
 interface FullScreenModeProps {
   station: Station
@@ -101,22 +54,16 @@ function FullScreenMode({
     ]
   )
 
+  const HeartIcon = alreadyAddedToFavorites(station.id) ? (
+    <StyledIcon icon={heart} onClick={() => removeToFavorites(station.id)} />
+  ) : (
+    <StyledIcon icon={heartOutline} onClick={() => addToFavorites(station)} />
+  )
+
   return (
     <BaseContainer style={{ clipPath }}>
       <TopContainer>
-        <TouchableOpacity>
-          {alreadyAddedToFavorites(station.id) ? (
-            <StyledIcon
-              icon={heart}
-              onClick={() => removeToFavorites(station.id)}
-            />
-          ) : (
-            <StyledIcon
-              icon={heartOutline}
-              onClick={() => addToFavorites(station)}
-            />
-          )}
-        </TouchableOpacity>
+        <TouchableOpacity>{HeartIcon}</TouchableOpacity>
 
         <TouchableOpacity onClick={onCloseClick}>
           <StyledIcon icon={closeOutline} />
@@ -131,7 +78,8 @@ function FullScreenMode({
         <VolumeContainer>
           <Volume
             value={volume}
-            onIonChange={({ detail }) => changeVolume(parseInt(detail.value.toLocaleString()) / 100)
+            onIonChange={({ detail }) =>
+              changeVolume(parseInt(detail.value.toLocaleString()) / 100)
             }
           />
           <StyledIcon icon={volumeHighOutline} />

@@ -1,5 +1,5 @@
 import React from 'react'
-import usePreferences from '../../stores/preferences.store'
+import usePreferences from '../../../stores/preferences.store'
 
 function useAudio() {
   const audio = React.useRef<HTMLAudioElement>(new Audio()).current

@@ -1,8 +1,8 @@
 import React from 'react'
-import { StationsContainer } from '../../components/ui'
 import { Station } from '../../models'
 import usePreferences from '../../stores/preferences.store'
 import StationItem from './station-item'
+import { StationsContainer } from './styleds/station-list.styled'
 
 interface StationListProps {
   stations: Station[]
@@ -21,7 +21,6 @@ function StationList({ stations }: StationListProps) {
           key={index}
           station={item}
           isSelected={selectedStation?.id === item.id}
-          index={index}
           onClick={() => setSelectedStation(item)}
         />
       ))}

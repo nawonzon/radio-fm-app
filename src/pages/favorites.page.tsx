@@ -1,9 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Station } from '../models'
 import useFavorites from '../stores/favorites.store'
-import StationItem from '../components/StationItem'
-import { Container, StationsContainer, Text } from '../components/ui'
+import { Container, Text } from '../components/ui'
+import { StationList } from '../feats/stations'
 
 const BaseContainer = styled(Container)`
   flex-direction: column;
@@ -18,29 +17,13 @@ const BaseContainer = styled(Container)`
   }
 `
 
-interface FavoritesProps {
-  selectedStation?: Station
-  onStationClick: (station: Station) => void
-}
-
-function Favorites({ selectedStation, onStationClick }: FavoritesProps) {
+function Favorites() {
   const [stations] = useFavorites((state) => [state.stations])
 
   return (
     <BaseContainer>
       <Text color="primary">Favorites</Text>
-
-      <StationsContainer>
-        {stations.map((item, index) => (
-          <StationItem
-            key={index}
-            station={item}
-            isSelected={selectedStation?.id === item.id}
-            index={index}
-            onClick={() => onStationClick(item)}
-          />
-        ))}
-      </StationsContainer>
+      <StationList stations={stations} />
     </BaseContainer>
   )
 }

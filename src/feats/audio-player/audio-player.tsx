@@ -1,20 +1,24 @@
-import { animate, useMotionValue } from 'framer-motion'
 import React from 'react'
 import FullScreenMode from './full-screen-mode'
 import MinimizedMode from './minimized-mode'
-import useAudio from './use-audio.hook'
+import useAudio from './hooks/use-audio.hook'
+import useOpenCloseAnimation from './hooks/use-open-close-animation.hook'
 
 function AudioPlayer() {
+  const {
+    toggleStreaming,
+    isStreaming,
+    volume,
+    changeVolume,
+    stopStreaming,
+    selectedStation
+  } = useAudio()
 
-  const {toggleStreaming, isStreaming, volume, changeVolume, stopStreaming, selectedStation} = useAudio()
+  const { animatedValue, startAnimation } = useOpenCloseAnimation()
 
-  const animatedValue = useMotionValue(0)
-
-  const startAnimation = (action: 'open' | 'close') => {
-    animate(animatedValue, action === 'open' ? 100 : 0, {
-      type: 'tween',
-      duration: 0.6
-    })
+  const handleFullScreenModeClosing = () => {
+    if (!isStreaming) stopStreaming() 
+    startAnimation('close')
   }
 
   if (!selectedStation) return null
@@ -35,7 +39,7 @@ function AudioPlayer() {
         toggleStreaming={toggleStreaming}
         isStreaming={isStreaming}
         animatedValue={animatedValue}
-        onCloseClick={() => startAnimation('close')}
+        onCloseClick={handleFullScreenModeClosing}
       />
     </>
   )

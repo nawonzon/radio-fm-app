@@ -30,13 +30,3 @@ export const Image = styled(({ ...restProps }) => (
     onError={(evt) => ((evt.target as HTMLImageElement).src = radioDefaultImg)}
   />
 ))({})
-
-export const StationsContainer = styled(Container)`
-  flex-direction: column;
-  overflow-y: scroll;
-  gap: 10px;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`

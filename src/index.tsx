@@ -4,7 +4,7 @@ import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { BrowserRouter } from 'react-router-dom'
 
-import './plugins/ionic'
+import './plugins/ionic.plugin'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 

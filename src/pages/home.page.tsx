@@ -1,20 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import {
-  Container,
-  StationsContainer,
-  StyledIcon,
-  Text,
-  TouchableOpacity
-} from '../components/ui'
+import { Container, StyledIcon, Text, TouchableOpacity } from '../components/ui'
 import { chevronForwardOutline, heartOutline } from 'ionicons/icons'
-import { RadioBrowserApi } from 'radio-browser-api'
-import { IonModal } from '@ionic/react'
-import ChooseCountryModal from '../components/ChooseCountryModal'
+import ChooseCountryModal from '../feats/countries/choose-country-modal'
 import usePreferences from '../stores/preferences.store'
-import StationItem from '../components/StationItem'
 import { useNavigate } from 'react-router-dom'
-import { Station } from '../models'
+import { StationList, useStations } from '../feats/stations'
 
 const TopSection = styled(Container)`
   flex-direction: column;
@@ -51,45 +42,15 @@ const StationsSection = styled(Container)`
   }
 `
 
-interface HomeProps {
-  onStationClick: (station: Station) => void
-  selectedStation?: Station
-}
-
-function Home({ onStationClick, selectedStation }: HomeProps) {
-  const [stations, setStations] = React.useState<Station[]>([])
-
-  const [country, setCountry] = usePreferences((state) => [
+function Home() {
+  const [country, setSelectedCountry] = usePreferences((state) => [
     state.selectedCountry,
     state.setSelectedCountry
   ])
 
-  const countryModalRef = React.useRef<HTMLIonModalElement>(null)
+  const { stations } = useStations(country)
 
   const navigate = useNavigate()
-
-  const getStations = React.useCallback(async () => {
-    const api = new RadioBrowserApi('Radio App')
-
-    const data = await api.searchStations({
-      countryCode: country.alpha2Code,
-      limit: 100
-    })
-
-    setStations(
-      data.map((item) => ({
-        id: item.id,
-        name: item.name,
-        tags: item.tags,
-        url: item.url,
-        favicon: item.favicon
-      }))
-    )
-  }, [country])
-
-  React.useEffect(() => {
-    getStations()
-  }, [getStations])
 
   return (
     <>
@@ -112,34 +73,13 @@ function Home({ onStationClick, selectedStation }: HomeProps) {
 
       <StationsSection>
         <Text color="primary">Stations</Text>
-
-        <StationsContainer>
-          {stations.map((item, index) => (
-            <StationItem
-              key={index}
-              station={item}
-              isSelected={selectedStation?.id === item.id}
-              index={index}
-              onClick={() => onStationClick(item)}
-            />
-          ))}
-        </StationsContainer>
+        <StationList stations={stations} />
       </StationsSection>
 
-      <IonModal
-        ref={countryModalRef}
-        isOpen={false}
+      <ChooseCountryModal
         trigger="chooseContryModal"
-        breakpoints={[0.7]}
-        initialBreakpoint={0.7}
-      >
-        <ChooseCountryModal
-          onChange={(country) => {
-            setCountry(country)
-            countryModalRef.current?.dismiss()
-          }}
-        />
-      </IonModal>
+        onChooseCountry={(choosedCountry) => setSelectedCountry(choosedCountry)}
+      />
     </>
   )
 }
